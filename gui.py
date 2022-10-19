@@ -1,6 +1,6 @@
 from turtle import back
 import PySimpleGUI as sg
-
+from keylogging import KeyLogger
 
 menubar = [
             sg.Button(button_text="Home", size=(10, 2), enable_events=True, pad=(0, 0), button_color="black on #9cc2ff", border_width=0, expand_x = True, expand_y = False, key="HOMEPAGE"),
@@ -18,7 +18,9 @@ homeLayout = [
 
 # 2
 keylogLayout = [
-    [sg.Text("Key Log Page", text_color="black", background_color="white", expand_x = True, expand_y = True, pad=(0, 0), justification = "center", key="KEYLOGPAGETEXT")],
+    [sg.Text("Key Log Page", text_color="black", background_color="white", expand_x = True, pad=(0, 0), justification = "center", key="KEYLOGPAGETEXT")],
+    [sg.Column(layout=[[sg.Push(), sg.Button("Start Keylogging", pad=20, key="STARTKEYLOG", visible=True, expand_x=True), sg.Push()]], justification="center"),
+    sg.Column(layout=[[sg.Push(), sg.Button("Stop Keylogging", pad=20, key="STOPKEYLOG", visible=False, expand_x=True), sg.Push()]], justification="center")]
 ]
 
 # 3
@@ -84,6 +86,17 @@ while True:
         window[f"{layout}COL"].update(visible=False)
         layout = event
         window[f"{layout}COL"].update(visible=True)
-    
+        
+    if event == "STARTKEYLOG":
+        keylogger = KeyLogger()
+        keylogger.start()
+        window["STARTKEYLOG"].update(visible = False)
+        window["STOPKEYLOG"].update(visible = True)
+        
+    if event == "STOPKEYLOG":
+        keylogger.stop()
+        window["STARTKEYLOG"].update(visible = True)
+        window["STOPKEYLOG"].update(visible = False)
+        del keylogger
 
 window.close()
