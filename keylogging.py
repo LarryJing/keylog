@@ -24,8 +24,7 @@ class KeyLogger:
         
     def update_filename(self):
         # construct the filename to be identified by start & end datetimes
-        start_dt_str = str(self.startDate)[:-7].replace(" ", "-").replace(":", "")
-        self.filename = f"keylog-{start_dt_str}"
+        self.filename = f"keylog-{self.startDate}"
         
     def report_to_file(self):
         """This method creates a log file in the current directory that contains

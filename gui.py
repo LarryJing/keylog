@@ -1,6 +1,10 @@
 from turtle import back
 import PySimpleGUI as sg
 from keylogging import KeyLogger
+import utility as util
+from datetime import datetime
+import os
+
 
 menubar = [
             sg.Button(button_text="Home", size=(10, 2), enable_events=True, pad=(0, 0), button_color="black on #9cc2ff", border_width=0, expand_x = True, expand_y = False, key="HOMEPAGE"),
@@ -20,7 +24,8 @@ homeLayout = [
 keylogLayout = [
     [sg.Text("Key Log Page", text_color="black", background_color="white", expand_x = True, pad=(0, 0), justification = "center", key="KEYLOGPAGETEXT")],
     [sg.Column(layout=[[sg.Push(), sg.Button("Start Keylogging", pad=20, key="STARTKEYLOG", visible=True, expand_x=True), sg.Push()]], justification="center"),
-    sg.Column(layout=[[sg.Push(), sg.Button("Stop Keylogging", pad=20, key="STOPKEYLOG", visible=False, expand_x=True), sg.Push()]], justification="center")]
+    sg.Column(layout=[[sg.Push(), sg.Button("Stop Keylogging", pad=20, key="STOPKEYLOG", visible=False, expand_x=True), sg.Push()]], justification="center")],
+    [sg.Column(layout=[[sg.Push(), sg.Button("See Today's Keylog History", pad=20, key="SEEKEYLOGS", visible=True, expand_x=True), sg.Push()]], justification="center")]
 ]
 
 # 3
@@ -98,5 +103,17 @@ while True:
         window["STARTKEYLOG"].update(visible = True)
         window["STOPKEYLOG"].update(visible = False)
         del keylogger
+        
+    if event == "SEEKEYLOGS":
+        filename = f"keylog-{datetime.now().date()}"
+        if os.path.exists("logs/") == False:
+            os.mkdir("logs/")
+        try:
+            with open(f"logs/{filename}.txt", "rt", encoding='utf-8') as f:
+                text = f.read()
+            util.popup_text(filename, text)
+        except Exception as e:
+            sg.Popup("No keylogs for today")
+            print("Error: ", e)
 
 window.close()
